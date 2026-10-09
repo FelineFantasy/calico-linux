@@ -20,8 +20,9 @@ jobs:
     - name: Build ISO using Podman
       run: |
         sudo podman run --privileged --rm -v ${{ github.workspace }}:/build fedora:44 bash -c "
-          dnf install -y livecd-tools fedora-kickstarts git &&
-          cd /usr/share/fedora-kickstarts/ &&
+          dnf install -y livecd-tools git &&
+          git clone -b f44 https://pagure.io/fedora-kickstarts.git /tmp/kickstarts &&
+          cd /tmp/kickstarts &&
           cp /build/calico.ks ./calico.ks &&
           livecd-creator --config=calico.ks --fslabel=Calico-Linux-${{ github.event.inputs.version }} --cache=/var/cache/live &&
           mv *.iso /build/Calico-Linux-${{ github.event.inputs.version }}.iso
