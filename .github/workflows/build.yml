@@ -14,9 +14,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    # Шаг 1: Полная очистка виртуальной машины от мусора (освобождает ~30 ГБ)
     - name: Free Disk Space (Ubuntu)
-      uses: jlumbroso/free-disk-space-ubuntu@v1.3.1
+      uses: jlumbroso/free-disk-space@v1.3.1
       with:
         tool-cache: false
         android: true
