@@ -1,0 +1,36 @@
+name: Build Calico Linux ISO
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Версия дистрибутива (например, 1.0.0)'
+        required: true
+      release_notes:
+        description: 'Что нового'
+        required: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Build ISO using Podman
+      run: |
+        sudo podman run --privileged --rm -v .:/build fedora:44 bash -c "
+          dnf install -y livecd-tools git &&
+          cd /build &&
+          livecd-creator --config=calico.ks --fslabel=Calico-Linux-${{ github.event.inputs.version }} --cache=/var/cache/live
+        "
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ github.event.inputs.version }}
+        name: Calico Linux v${{ github.event.inputs.version }}
+        body: ${{ github.event.inputs.release_notes }}
+        files: Calico-Linux-${{ github.event.inputs.version }}.iso
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
