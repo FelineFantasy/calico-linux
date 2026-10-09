@@ -20,9 +20,11 @@ jobs:
     - name: Build ISO using Podman
       run: |
         sudo podman run --privileged --rm -v ${{ github.workspace }}:/build fedora:44 bash -c "
-          dnf install -y livecd-tools git &&
-          cd /build &&
-          livecd-creator --config=/build/calico.ks --fslabel=Calico-Linux-${{ github.event.inputs.version }} --cache=/var/cache/live
+          dnf install -y livecd-tools fedora-kickstarts git &&
+          cd /usr/share/fedora-kickstarts/ &&
+          cp /build/calico.ks ./calico.ks &&
+          livecd-creator --config=calico.ks --fslabel=Calico-Linux-${{ github.event.inputs.version }} --cache=/var/cache/live &&
+          mv *.iso /build/Calico-Linux-${{ github.event.inputs.version }}.iso
         "
 
     - name: Create GitHub Release
@@ -31,6 +33,6 @@ jobs:
         tag_name: v${{ github.event.inputs.version }}
         name: Calico Linux v${{ github.event.inputs.version }}
         body: ${{ github.event.inputs.release_notes }}
-        files: /home/runner/work/calico-linux/calico-linux/Calico-Linux-${{ github.event.inputs.version }}.iso
+        files: Calico-Linux-${{ github.event.inputs.version }}.iso
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
