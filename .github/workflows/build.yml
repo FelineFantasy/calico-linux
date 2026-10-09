@@ -28,17 +28,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Build ISO using Podman
+    - name: Build ISO directly on Ubuntu Host
       run: |
-        sudo podman run --privileged --rm -v ${{ github.workspace }}:/build fedora:44 bash -c "
-          dnf install -y livecd-tools git &&
-          git clone https://pagure.io/fedora-kickstarts.git /tmp/ks &&
-          cd /tmp/ks &&
-          git checkout f43 &&
-          cp /build/calico.ks ./calico.ks &&
-          livecd-creator --config=calico.ks --fslabel=Calico-Linux-${{ github.event.inputs.version }} --cache=/var/cache/live &&
-          mv *.iso /build/Calico-Linux-${{ github.event.inputs.version }}.iso
-        "
+        sudo apt-get update && sudo apt-get install -y dnf python3 git
+        git clone https://pagure.io/fedora-kickstarts.git /tmp/ks
+        cd /tmp/ks
+        git checkout f43
+        cp ${{ github.workspace }}/calico.ks ./calico.ks
+        
+        # Ставим инструменты сборки Fedora прямо в Ubuntu
+        sudo dnf install -y --releasever=43 livecd-tools --installroot=/tmp/f43_root --setopt=reposdir=/tmp/ks
+        
+        # Запускаем сборку, используя всё свободное место Ubuntu (30+ ГБ)
+        sudo livecd-creator --config=calico.ks --fslabel=Calico-Linux-${{ github.event.inputs.version }} --cache=/var/cache/live
+        mv *.iso ${{ github.workspace }}/Calico-Linux-${{ github.event.inputs.version }}.iso
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
