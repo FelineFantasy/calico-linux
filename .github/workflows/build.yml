@@ -21,9 +21,9 @@ jobs:
       run: |
         sudo podman run --privileged --rm -v ${{ github.workspace }}:/build fedora:44 bash -c "
           dnf install -y livecd-tools git &&
-          git clone https://pagure.io /tmp/kickstarts &&
-          cd /tmp/kickstarts &&
-          git checkout f43 || git checkout main &&
+          git clone https://pagure.io/fedora-kickstarts.git /tmp/ks &&
+          cd /tmp/ks &&
+          git checkout f43 &&
           cp /build/calico.ks ./calico.ks &&
           livecd-creator --config=calico.ks --fslabel=Calico-Linux-${{ github.event.inputs.version }} --cache=/var/cache/live &&
           mv *.iso /build/Calico-Linux-${{ github.event.inputs.version }}.iso
