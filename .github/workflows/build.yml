@@ -4,20 +4,20 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Версия дистрибутива (например, 1.0.0)'
+        description: 'Distribution version (e.g. 1.0.0)'
         required: true
       release_notes:
-        description: 'Что нового'
+        description: 'What is new'
         required: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Free Disk Space (Ubuntu)
+    - name: Free Disk Space
       uses: jlumbroso/free-disk-space@v1.3.1
       with:
-        tool-cache: false
+        tool-cache: true
         android: true
         dotnet: true
         haskell: true
@@ -28,20 +28,38 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Build ISO directly on Ubuntu Host
+    - name: Build ISO in Fedora container
       run: |
-        sudo apt-get update && sudo apt-get install -y dnf python3 git
-        git clone https://pagure.io/fedora-kickstarts.git /tmp/ks
-        cd /tmp/ks
-        git checkout f43
-        cp ${{ github.workspace }}/calico.ks ./calico.ks
-        
-        # Ставим инструменты сборки Fedora прямо в Ubuntu
-        sudo dnf install -y --releasever=43 livecd-tools --installroot=/tmp/f43_root --setopt=reposdir=/tmp/ks
-        
-        # Запускаем сборку, используя всё свободное место Ubuntu (30+ ГБ)
-        sudo livecd-creator --config=calico.ks --fslabel=Calico-Linux-${{ github.event.inputs.version }} --cache=/var/cache/live
-        mv *.iso ${{ github.workspace }}/Calico-Linux-${{ github.event.inputs.version }}.iso
+        set -euo pipefail
+
+        docker run --privileged --rm \
+          -v "${{ github.workspace }}:/work" \
+          -w /work \
+          fedora:42 \
+          bash -c '
+            set -euo pipefail
+
+            dnf install -y livecd-tools spin-kickstarts git
+
+            git clone --depth 1 --branch f42 https://pagure.io/fedora-kickstarts.git /tmp/ks
+
+            cp /work/calico.ks /tmp/ks/calico.ks
+
+            cd /tmp/ks
+            livecd-creator \
+              --config=calico.ks \
+              --fslabel="Calico-Linux-${{ github.event.inputs.version }}" \
+              --cache=/var/cache/live \
+              -p /tmp/ks
+
+            cp /tmp/ks/*.iso /work/Calico-Linux-${{ github.event.inputs.version }}.iso
+          '
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Calico-Linux-${{ github.event.inputs.version }}
+        path: Calico-Linux-${{ github.event.inputs.version }}.iso
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
@@ -52,3 +70,4 @@ jobs:
         files: Calico-Linux-${{ github.event.inputs.version }}.iso
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
