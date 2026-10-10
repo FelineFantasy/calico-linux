@@ -1,20 +1,18 @@
-# fedora-livecd-xfce.ks
+# calico.ks
 #
 # Description:
-# - Fedora Live Spin with the light-weight XFCE Desktop Environment
+# - Fedora Live Spin with the light-weight XFCE Desktop Environment,
+#   rebranded as Calico Linux.
 #
 # Maintainer(s):
-# - Rahul Sundaram    <sundaram@fedoraproject.org>
-# - Christoph Wickert <cwickert@fedoraproject.org>
-# - Kevin Fenzi       <kevin@tummy.com>
-# - Adam Miller       <maxamillion@fedoraproject.org>
+# - Calico Linux maintainers
 
 %include fedora-live-base.ks
 %include fedora-live-minimization.ks
-%include fedora-xfce-common.ks
+%include fedora-xfce/fedora-xfce-common.ks
 
 # need a bigger /
-part / --size 6144
+part / --size 8192
 
 %packages
 kitty
