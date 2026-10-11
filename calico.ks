@@ -15,6 +15,8 @@
 %include fedora-xfce-common.ks
 
 %packages
+kitty
+fastfetch
 %end
 
 %post
