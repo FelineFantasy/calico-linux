@@ -39,20 +39,25 @@ jobs:
           bash -c '
             set -euo pipefail
 
-            dnf install -y livecd-tools spin-kickstarts git
+            dnf install -y lorax pykickstart git rsync
 
             git clone --depth 1 --branch f42 https://pagure.io/fedora-kickstarts.git /tmp/ks
 
             cp /work/calico.ks /tmp/ks/calico.ks
 
             cd /tmp/ks
-            livecd-creator \
-              --config=calico.ks \
-              --fslabel="Calico-Linux-${{ github.event.inputs.version }}" \
-              --cache=/var/cache/live \
-              -p /tmp/ks
+            livemedia-creator \
+              --ks=calico.ks \
+              --no-virt \
+              --resultdir=/tmp/result \
+              --project="Calico Linux" \
+              --releasever=42 \
+              --make-iso \
+              --volid="Calico-Linux-${{ github.event.inputs.version }}" \
+              --iso-only \
+              --iso-name="Calico-Linux-${{ github.event.inputs.version }}.iso"
 
-            cp /tmp/ks/*.iso /work/Calico-Linux-${{ github.event.inputs.version }}.iso
+            cp /tmp/result/*.iso /work/Calico-Linux-${{ github.event.inputs.version }}.iso
           '
 
     - name: Verify ISO and generate checksum
