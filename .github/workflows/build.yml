@@ -59,31 +59,3 @@ jobs:
 
             cp /tmp/result/*.iso /work/Calico-Linux-${{ github.event.inputs.version }}.iso
           '
-
-    - name: Verify ISO and generate checksum
-      run: |
-        set -euo pipefail
-        ISO="Calico-Linux-${{ github.event.inputs.version }}.iso"
-        ls -lh "$ISO"
-        sha256sum "$ISO" > "$ISO.sha256"
-        cat "$ISO.sha256"
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: Calico-Linux-${{ github.event.inputs.version }}
-        path: |
-          Calico-Linux-${{ github.event.inputs.version }}.iso
-          Calico-Linux-${{ github.event.inputs.version }}.iso.sha256
-
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2
-      with:
-        tag_name: v${{ github.event.inputs.version }}
-        name: Calico Linux v${{ github.event.inputs.version }}
-        body: ${{ github.event.inputs.release_notes }}
-        files: |
-          Calico-Linux-${{ github.event.inputs.version }}.iso
-          Calico-Linux-${{ github.event.inputs.version }}.iso.sha256
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
