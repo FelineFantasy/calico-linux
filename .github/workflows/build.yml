@@ -39,7 +39,7 @@ jobs:
           bash -c '
             set -euo pipefail
 
-            dnf install -y lorax pykickstart git rsync
+            dnf install -y lorax pykickstart git rsync anaconda
 
             git clone --branch f42 https://pagure.io/fedora-kickstarts.git /tmp/ks
 
