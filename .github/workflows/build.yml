@@ -47,7 +47,7 @@ jobs:
 
             cd /tmp/ks
             livemedia-creator \
-              --ks=calico.ks \
+              --ks=/tmp/ks/calico.ks \
               --no-virt \
               --resultdir=/tmp/result \
               --project="Calico Linux" \
