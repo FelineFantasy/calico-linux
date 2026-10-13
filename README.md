@@ -63,3 +63,16 @@ calico.ks                     # kickstart overlay
 .github/workflows/build.yml   # CI that produces the ISO
 README.md                     # this file
 ```
+
+## 💖 Support the Project
+
+If you enjoy **PurrScript** and want to help keep the project alive, you can support me here:
+
+[![DonationAlerts](https://img.shields.io/badge/DonationAlerts-Support-blue.svg)](https://www.donationalerts.com/r/felinefantasy)
+
+Your support helps me:
+- 🐱 Add new cat commands
+- 🛠️ Fix bugs and improve the transpiler
+- ☕ Stay awake while coding at 4 AM
+
+Every little bit is appreciated! ❤️
