@@ -15,7 +15,6 @@
 %include /tmp/ks/fedora-live-xfce.ks
 
 %packages
-kitty
 fastfetch
 %end
 
