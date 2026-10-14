@@ -76,3 +76,7 @@ Your support helps me:
 - ☕ Stay awake while coding at 4 AM
 
 Every little bit is appreciated! ❤️
+
+## 👤 Author
+- **FelineFantasy**
+- **License**: MIT
