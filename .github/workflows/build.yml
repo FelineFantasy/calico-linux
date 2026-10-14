@@ -53,7 +53,6 @@ jobs:
               --project="Calico Linux" \
               --releasever=42 \
               --make-iso \
-              --disk-size=10 \
               --volid="Calico-Linux-${{ github.event.inputs.version }}" \
               --iso-only \
               --iso-name="Calico-Linux-${{ github.event.inputs.version }}.iso"
