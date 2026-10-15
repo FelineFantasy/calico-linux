@@ -66,14 +66,15 @@ README.md                     # this file
 
 ## 💖 Support the Project
 
-If you enjoy **PurrScript** and want to help keep the project alive, you can support me here:
+If you enjoy **Calico Linux** and want to help keep the project alive, you can support me here:
 
 [![DonationAlerts](https://img.shields.io/badge/DonationAlerts-Support-blue.svg)](https://www.donationalerts.com/r/felinefantasy)
 
 Your support helps me:
-- 🐱 Add new cat commands
-- 🛠️ Fix bugs and improve the transpiler
-- ☕ Stay awake while coding at 4 AM
+- 🐾 Keep the distro updated with new Fedora releases
+- 🎨 Improve branding, wallpapers and default configs
+- 🛠️ Fix build issues and add new packages
+- ☕ Stay awake while debugging kickstarts at 4 AM
 
 Every little bit is appreciated! ❤️
 
