@@ -10,8 +10,6 @@
 # Note: do NOT redefine `part /` here — fedora-live-base.ks already
 # declares it. Overriding causes livecd-creator/livemedia-creator to fail.
 
-%include /tmp/ks/fedora-live-base.ks
-%include /tmp/ks/fedora-live-minimization.ks
 %include /tmp/ks/fedora-live-xfce.ks
 
 %packages
