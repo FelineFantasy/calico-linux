@@ -52,9 +52,9 @@ jobs:
               --resultdir=/tmp/result \
               --project="Calico Linux" \
               --releasever=42 \
-              --make-iso \
-              --volid="Calico-Linux-${{ github.event.inputs.version }}" \
+              --make-disk \
               --iso-only \
+              --volid="Calico-Linux-${{ github.event.inputs.version }}" \
               --iso-name="Calico-Linux-${{ github.event.inputs.version }}.iso"
 
             cp /tmp/result/*.iso /work/Calico-Linux-${{ github.event.inputs.version }}.iso
