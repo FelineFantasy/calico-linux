@@ -39,7 +39,7 @@ jobs:
           bash -c '
             set -euo pipefail
 
-            dnf install -y livecd-tools spin-kickstarts git
+            dnf install -y livecd-tools git
 
             git clone --depth 1 --branch f42 https://pagure.io/fedora-kickstarts.git /tmp/ks
             cp /work/calico.ks /tmp/ks/calico.ks
