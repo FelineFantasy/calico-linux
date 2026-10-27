@@ -14,6 +14,27 @@
 
 %packages
 fastfetch
+-aajohan-comfortaa-fonts
+-adwaita-mono-fonts
+-adwaita-sans-fonts
+-alsa-sof-firmware
+-bash-color-prompt
+-gawk-all-langpacks
+-gdouros-symbola-fonts
+-geolite2-city
+-geolite2-country
+-google-noto-emoji-fonts
+-mailcap
+-microcode_ctl
+-mint-y-theme
+-nvidia-gpu-firmware
+-nxpwireless-firmware
+-open-sans-fonts
+-qcom-wwan-firmware
+-realtek-firmware
+-rootfiles
+-tiwilink-firmware
+-words
 %end
 
 %post
