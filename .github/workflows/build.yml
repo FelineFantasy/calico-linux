@@ -49,10 +49,9 @@ jobs:
             livecd-creator \
               --config=./calico.ks \
               --fslabel="Calico-Linux-${{ github.event.inputs.version }}" \
-              --cache=/var/cache/live \
-              -p /tmp/ks
+              --cache=/var/cache/live
 
-            cp -v /tmp/ks/*.iso /work/Calico-Linux-${{ github.event.inputs.version }}.iso
+            cp -v ./*.iso /work/Calico-Linux-${{ github.event.inputs.version }}.iso 2>&1 | tail -5
           '
 
     - name: Verify ISO and generate checksum
