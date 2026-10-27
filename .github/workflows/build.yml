@@ -32,7 +32,7 @@ jobs:
       run: |
         set -euo pipefail
 
-        docker run --privileged --rm \
+        docker run --privileged --rm --shm-size=4g \
           -v "${{ github.workspace }}:/work" \
           -w /work \
           fedora:42 \
@@ -40,10 +40,13 @@ jobs:
             set -euo pipefail
 
             dnf install -y livecd-tools git
+            dnf clean all
+            rm -rf /var/cache/dnf/* /var/log/dnf* /var/log/yum* 2>/dev/null || true
 
             rm -rf /tmp/ks /tmp/lc /work/tmp
             mkdir -p /work/tmp /var/cache/live
             export TMPDIR=/work/tmp
+            export HOME=/work/tmp
             git clone --branch f42 https://pagure.io/fedora-kickstarts.git /tmp/ks
             cp /work/calico.ks /tmp/ks/calico.ks
 
