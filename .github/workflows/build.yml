@@ -41,7 +41,7 @@ jobs:
 
             dnf install -y livecd-tools git
 
-            git clone --depth 1 --branch f42 https://pagure.io/fedora-kickstarts.git /tmp/ks
+            git clone --branch f42 https://pagure.io/fedora-kickstarts.git /tmp/ks
             cp /work/calico.ks /tmp/ks/calico.ks
 
             cd /tmp/ks
