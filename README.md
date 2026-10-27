@@ -4,7 +4,7 @@ A Fedora XFCE live spin, rebranded as **Calico Linux**. 🐾
 
 Built from upstream `fedora-kickstarts` with a small `calico.ks`
 overlay that rebrands `os-release`, adds a motd banner, and ships
-`kitty` and `fastfetch` out of the box.
+`fastfetch` out of the box.
 
 ## Building via GitHub Actions
 
@@ -52,7 +52,7 @@ Known constraints
 
 · Built against Fedora f42 (stable). Change the branch in the
   workflow and calico.ks includes to target a different release.
-· Root partition is 8 GiB, sized for XFCE + kitty + fastfetch.
+· Root partition is 8 GiB, sized for XFCE + fastfetch.
 · Kernel, drivers and package set come from upstream
   fedora-live-base.ks and fedora-xfce-common.ks.
 
