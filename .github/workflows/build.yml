@@ -13,6 +13,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - name: Free Disk Space
       uses: jlumbroso/free-disk-space@v1.3.1
