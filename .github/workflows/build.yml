@@ -41,6 +41,7 @@ jobs:
 
             dnf install -y livecd-tools git
 
+            rm -rf /tmp/ks
             git clone --branch f42 https://pagure.io/fedora-kickstarts.git /tmp/ks
             cp /work/calico.ks /tmp/ks/calico.ks
 
@@ -49,9 +50,9 @@ jobs:
               --config=calico.ks \
               --fslabel="Calico-Linux-${{ github.event.inputs.version }}" \
               --cache=/var/cache/live \
-              -p /tmp/ks
+              -p .
 
-            cp /tmp/ks/*.iso /work/Calico-Linux-${{ github.event.inputs.version }}.iso
+            cp ./*.iso /work/Calico-Linux-${{ github.event.inputs.version }}.iso
           '
 
     - name: Verify ISO and generate checksum
