@@ -41,7 +41,9 @@ jobs:
 
             dnf install -y livecd-tools git
 
-            rm -rf /tmp/ks
+            rm -rf /tmp/ks /tmp/lc /work/tmp
+            mkdir -p /work/tmp /var/cache/live
+            export TMPDIR=/work/tmp
             git clone --branch f42 https://pagure.io/fedora-kickstarts.git /tmp/ks
             cp /work/calico.ks /tmp/ks/calico.ks
 
@@ -49,7 +51,8 @@ jobs:
             livecd-creator \
               --config=./calico.ks \
               --fslabel="Calico-Linux-${{ github.event.inputs.version }}" \
-              --cache=/var/cache/live
+              --cache=/var/cache/live \
+              --tmpdir=/work/tmp
 
             cp -v ./*.iso /work/Calico-Linux-${{ github.event.inputs.version }}.iso 2>&1 | tail -5
           '
