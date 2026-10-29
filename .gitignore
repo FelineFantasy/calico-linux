@@ -1,0 +1,11 @@
+# Build artifacts
+*.iso
+*.iso.sha256
+*.log
+/tmp/
+/build/
+
+# Editor and OS noise
+.DS_Store
+Thumbs.db
+*~
