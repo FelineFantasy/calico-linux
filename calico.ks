@@ -79,21 +79,62 @@ chmod 0644 /etc/profile.d/calico-motd.sh
 # Rebuild the live initramfs.
 #
 # In containerised builds dracut can fail while handling kernel-core in
-# %posttrans (it needs to mount loop devices).  livecd-tools only logs
-# "No initramfs or initrd found" in that case and happily builds the ISO
-# without /isolinux/initrd0.img, which produces media that cannot boot.
-# Rebuild it here so the image always ships a matching initramfs; the
-# dmsquash-live modules come from /etc/dracut.conf.d/99-liveos.conf, which
-# livecd-tools has already written by the time %post runs.
+# %posttrans.  livecd-tools only logs "No initramfs or initrd found" in that
+# case and happily builds the ISO without /isolinux/initrd0.img, which
+# produces media that cannot boot.  Rebuild it here so the image always ships
+# a matching initramfs; the dmsquash-live modules come from
+# /etc/dracut.conf.d/99-liveos.conf, which livecd-tools has already written by
+# the time %post runs.
 kernelver=$(ls -1 /lib/modules | sort -V | tail -n1)
 if [ -z "$kernelver" ]; then
     echo "calico: no kernel found in /lib/modules, cannot build initramfs" >&2
     exit 1
 fi
 
-dracut --force --no-hostonly "/boot/initramfs-${kernelver}.img" "$kernelver"
-if [ ! -s "/boot/initramfs-${kernelver}.img" ]; then
-    echo "calico: failed to build /boot/initramfs-${kernelver}.img" >&2
+# livecd-tools asks dracut for a fixed driver list written for much older
+# kernels.  dracut treats a missing module as fatal, and names such as ide_cd
+# no longer exist, so drop anything this kernel does not ship.
+liveos_conf=/etc/dracut.conf.d/99-liveos.conf
+if [ -f "$liveos_conf" ]; then
+    drivers=$(sed -n 's/^add_drivers+[[:space:]]*=[[:space:]]*"\(.*\)"[[:space:]]*$/\1/p' "$liveos_conf")
+    if [ -n "$drivers" ]; then
+        kept=""
+        for drv in $drivers; do
+            case "$drv" in
+                # dracut-install rejects bare group names.  livecd-tools uses
+                # "=ata" for the legacy IDE/PATA controllers but forgets to
+                # expand it, so do it here.
+                =ata) candidates="ata_piix ata_generic" ;;
+                =*)   candidates="" ;;
+                *)    candidates="$drv" ;;
+            esac
+            for mod in $candidates; do
+                if modinfo -k "$kernelver" "$mod" >/dev/null 2>&1; then
+                    kept="$kept $mod"
+                else
+                    echo "calico: dropping driver '$mod', not present in kernel $kernelver"
+                fi
+            done
+        done
+        kept=$(echo $kept)
+        sed -i "/^add_drivers+/d" "$liveos_conf"
+        printf 'add_drivers+=" %s "\n' "$kept" >> "$liveos_conf"
+    fi
+fi
+
+initramfs="/boot/initramfs-${kernelver}.img"
+if ! dracut --force --no-hostonly "$initramfs" "$kernelver"; then
+    echo "calico: dracut failed to build $initramfs" >&2
+    exit 1
+fi
+
+if [ ! -s "$initramfs" ]; then
+    echo "calico: $initramfs is missing or empty" >&2
+    exit 1
+fi
+
+if ! lsinitrd "$initramfs" | grep -q 'dmsquash-live'; then
+    echo "calico: $initramfs has no dmsquash-live support, the ISO would not boot" >&2
     exit 1
 fi
 

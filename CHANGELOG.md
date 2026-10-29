@@ -23,6 +23,9 @@ and releases are tagged `v<version>`.
   logged `No initramfs or initrd found` and built the ISO without
   `isolinux/initrd0.img`. `calico.ks` now rebuilds the live initramfs in
   `%post`, and the build workflow verifies the ISO payload before publishing.
+- The initramfs rebuild drops drivers that the installed kernel no longer
+  ships (`ide_cd`, `ieee1394`) and expands the bare `=ata` group entry that
+  dracut-install rejects, so dracut stops failing on stale livecd-tools data.
 
 ## [1.0.0]
 
