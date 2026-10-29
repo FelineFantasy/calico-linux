@@ -76,4 +76,25 @@ fi
 EOF
 chmod 0644 /etc/profile.d/calico-motd.sh
 
+# Rebuild the live initramfs.
+#
+# In containerised builds dracut can fail while handling kernel-core in
+# %posttrans (it needs to mount loop devices).  livecd-tools only logs
+# "No initramfs or initrd found" in that case and happily builds the ISO
+# without /isolinux/initrd0.img, which produces media that cannot boot.
+# Rebuild it here so the image always ships a matching initramfs; the
+# dmsquash-live modules come from /etc/dracut.conf.d/99-liveos.conf, which
+# livecd-tools has already written by the time %post runs.
+kernelver=$(ls -1 /lib/modules | sort -V | tail -n1)
+if [ -z "$kernelver" ]; then
+    echo "calico: no kernel found in /lib/modules, cannot build initramfs" >&2
+    exit 1
+fi
+
+dracut --force --no-hostonly "/boot/initramfs-${kernelver}.img" "$kernelver"
+if [ ! -s "/boot/initramfs-${kernelver}.img" ]; then
+    echo "calico: failed to build /boot/initramfs-${kernelver}.img" >&2
+    exit 1
+fi
+
 %end

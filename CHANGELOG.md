@@ -16,6 +16,14 @@ and releases are tagged `v<version>`.
 
 - README quick start section for guided ISO builds via GitHub Actions.
 
+### Fixed
+
+- Releases could ship an unbootable ISO: when dracut failed inside the image
+  (as happens in containerised `livecd-creator` runs), `livecd-tools` only
+  logged `No initramfs or initrd found` and built the ISO without
+  `isolinux/initrd0.img`. `calico.ks` now rebuilds the live initramfs in
+  `%post`, and the build workflow verifies the ISO payload before publishing.
+
 ## [1.0.0]
 
 ### Added

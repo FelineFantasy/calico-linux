@@ -67,6 +67,31 @@ jobs:
             cp -v ./*.iso /work/Calico-Linux-${{ github.event.inputs.version }}.iso 2>&1 | tail -5
           '
 
+    - name: Verify ISO is bootable
+      run: |
+        set -euo pipefail
+        ISO="Calico-Linux-${{ github.event.inputs.version }}.iso"
+
+        # livecd-tools silently skips a missing initramfs, which yields an ISO
+        # that cannot boot on any machine. Check the payload before publishing.
+        sudo mkdir -p /mnt/iso
+        sudo mount -o loop,ro "$ISO" /mnt/iso
+        trap 'sudo umount /mnt/iso' EXIT
+
+        for f in isolinux/vmlinuz0 isolinux/initrd0.img LiveOS/squashfs.img; do
+          if [ ! -s "/mnt/iso/$f" ]; then
+            echo "::error::$f is missing or empty - this ISO would not boot"
+            exit 1
+          fi
+        done
+
+        size=$(stat -c%s /mnt/iso/isolinux/initrd0.img)
+        echo "isolinux/initrd0.img: $size bytes"
+        if [ "$size" -lt 10000000 ]; then
+          echo "::error::isolinux/initrd0.img is only $size bytes - looks broken"
+          exit 1
+        fi
+
     - name: Verify ISO and generate checksum
       run: |
         set -euo pipefail
