@@ -137,5 +137,35 @@ if ! lsinitrd "$initramfs" | grep -q 'dmsquash-live'; then
     echo "calico: $initramfs has no dmsquash-live support, the ISO would not boot" >&2
     exit 1
 fi
+%end
 
+%post --nochroot --erroronfail
+# livecd-tools calls _create_bootconfig() in configure() *before* running the
+# %post scripts, so the initramfs built above is never copied into the ISO on
+# its own.  It also sets base_on = True unconditionally, which suppresses its
+# "No initramfs or initrd found" message, so the result was a silently broken
+# ISO.  Stage the freshly built initramfs into the ISO tree here.
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+
+kernelver=$(ls -1 "$INSTALL_ROOT/lib/modules" 2>/dev/null | sort -V | tail -n1)
+initramfs="$INSTALL_ROOT/boot/initramfs-${kernelver}.img"
+
+if [ -z "$kernelver" ] || [ ! -s "$initramfs" ]; then
+    echo "calico: cannot stage isolinux/initrd0.img, $initramfs is missing or empty" >&2
+    exit 1
+fi
+
+if [ ! -d "$LIVE_ROOT/isolinux" ]; then
+    echo "calico: ISO tree not found at $LIVE_ROOT/isolinux" >&2
+    exit 1
+fi
+
+install -m 0644 "$initramfs" "$LIVE_ROOT/isolinux/initrd0.img"
+size=$(stat -c%s "$LIVE_ROOT/isolinux/initrd0.img")
+echo "calico: staged isolinux/initrd0.img ($size bytes) from $initramfs"
+if [ "$size" -lt 10000000 ]; then
+    echo "calico: staged initrd0.img is only $size bytes, refusing to publish" >&2
+    exit 1
+fi
 %end

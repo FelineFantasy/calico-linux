@@ -78,6 +78,9 @@ jobs:
         sudo mount -o loop,ro "$ISO" /mnt/iso
         trap 'sudo umount /mnt/iso' EXIT
 
+        # Print the payload so a failure below is diagnosable from the log.
+        sudo find /mnt/iso -maxdepth 2 -type f -printf '%10s %p\n' | sort -k2
+
         for f in isolinux/vmlinuz0 isolinux/initrd0.img LiveOS/squashfs.img; do
           if [ ! -s "/mnt/iso/$f" ]; then
             echo "::error::$f is missing or empty - this ISO would not boot"

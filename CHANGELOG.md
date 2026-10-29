@@ -18,11 +18,15 @@ and releases are tagged `v<version>`.
 
 ### Fixed
 
-- Releases could ship an unbootable ISO: when dracut failed inside the image
-  (as happens in containerised `livecd-creator` runs), `livecd-tools` only
-  logged `No initramfs or initrd found` and built the ISO without
-  `isolinux/initrd0.img`. `calico.ks` now rebuilds the live initramfs in
-  `%post`, and the build workflow verifies the ISO payload before publishing.
+- Releases could ship an unbootable ISO. `livecd-tools` stages the kernel and
+  initramfs in `configure()` *before* running the kickstart `%post` scripts,
+  and it sets `base_on = True` unconditionally, which suppresses its
+  `No initramfs or initrd found` error. With the kernel's own dracut failing
+  in containerised builds, the resulting ISO simply had no
+  `isolinux/initrd0.img` and nothing in the log said so. `calico.ks` now
+  rebuilds the live initramfs in `%post` and stages it into the ISO tree from
+  a `%post --nochroot` hook, and the build workflow refuses to publish an ISO
+  without a working payload.
 - The initramfs rebuild drops drivers that the installed kernel no longer
   ships (`ide_cd`, `ieee1394`) and expands the bare `=ata` group entry that
   dracut-install rejects, so dracut stops failing on stale livecd-tools data.
