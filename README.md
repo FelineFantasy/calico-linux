@@ -2,7 +2,7 @@
 
 A Fedora XFCE live spin, rebranded as **Calico Linux**. 🐾
 
-Built from upstream `fedora-kickstarts` with a small `calico.ks` overlay that rebrands `os-release`, shows a branded `fastfetch` on login, and adds a small set of quality-of-life CLI tools (`kitty`, `bat`, `eza`, `fzf`, `zoxide`, `ripgrep`, `fd-find`, `jq`, `tree`, `btop`, `ncdu`, `duf`, `inxi`, `micro`, `tmux`, `git`, `unzip`, `p7zip`, `zstd`).
+Built from upstream `fedora-kickstarts` with a small `calico.ks` overlay that rebrands `os-release`, greets you with a cat on login, ships `fastfetch` with a branded config, and adds a small set of quality-of-life CLI tools (`kitty`, `bat`, `eza`, `fzf`, `zoxide`, `ripgrep`, `fd-find`, `jq`, `tree`, `btop`, `ncdu`, `duf`, `inxi`, `micro`, `tmux`, `git`, `unzip`, `p7zip`, `zstd`).
 
 ## Building via GitHub Actions
 

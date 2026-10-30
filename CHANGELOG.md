@@ -23,8 +23,10 @@ and releases are tagged `v<version>`.
 ### Changed
 
 - README quick start section for guided ISO builds via GitHub Actions.
-- Interactive login shells now show `fastfetch` instead of the plain two-line
-  banner (the motd/issue text banner is still used for consoles).
+- Interactive login shells show the `Welcome to Calico Linux! 🐾 / Meow!` greeting
+  again, like the pre-1.0.13 images. `fastfetch` stays installed with the
+  branded config in `/etc/fastfetch/`, so users can still run `fastfetch`
+  manually for the full system summary.
 
 ### Fixed
 

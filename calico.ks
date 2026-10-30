@@ -100,11 +100,7 @@ mkdir -p /etc/profile.d
 cat > /etc/profile.d/calico-motd.sh <<'EOF'
 if [ -n "$PS1" ] && [ -z "$CALICO_MOTD_SHOWN" ]; then
     export CALICO_MOTD_SHOWN=1
-    if [ -x /usr/bin/fastfetch ] && [ -r /etc/fastfetch/config.jsonc ]; then
-        fastfetch --config /etc/fastfetch/config.jsonc
-    else
-        printf 'Welcome to Calico Linux! 🐾\nMeow!\n'
-    fi
+    printf 'Welcome to Calico Linux! 🐾\nMeow!\n'
 fi
 EOF
 chmod 0644 /etc/profile.d/calico-motd.sh
