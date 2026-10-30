@@ -46,6 +46,16 @@ and releases are tagged `v<version>`.
   (and pushed it over GitHub's 2 GiB release asset limit, which failed the
   release upload). The workflow now fails before uploading an oversized ISO.
 
+### Known issues
+
+- `kitty` 0.43.1 from Fedora 42 prints a spurious
+  `[glfw error 65544]: Notify: Failed to get server capabilities` warning on
+  startup under XFCE and in virtual machines. It comes from a 60 ms D-Bus
+  timeout in kitty itself ([kovidgoyal/kitty#10215][kitty-10215]) and does not
+  stop `kitty` from opening; the terminal still works.
+
+[kitty-10215]: https://github.com/kovidgoyal/kitty/issues/10215
+
 ## [1.0.0]
 
 ### Added
