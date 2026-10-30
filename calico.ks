@@ -228,4 +228,13 @@ if [ "$size" -lt 10000000 ]; then
     echo "calico: staged initrd0.img is only $size bytes, refusing to publish" >&2
     exit 1
 fi
+
+# The live root filesystem also carries a copy of the same initramfs in
+# /boot, because that is where dracut wrote it.  Nothing boots from it: the
+# ISO boots via isolinux/initrd0.img (staged above) and an installed system
+# gets a fresh one from anaconda.  Keeping both copies wastes ~150 MiB and
+# pushes the ISO past GitHub's 2 GiB release asset limit, so drop the live
+# copy now that the ISO tree has it.
+rm -f "$INSTALL_ROOT"/boot/initramfs-*.img
+echo "calico: removed the duplicate initramfs from $INSTALL_ROOT/boot"
 %end

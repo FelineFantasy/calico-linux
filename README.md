@@ -51,6 +51,7 @@ Compare against the `.iso.sha256` file attached to the release.
 - Root partition is 8 GiB, sized for XFCE + fastfetch.
 - Kernel, drivers and the base package set come from upstream `fedora-live-base.ks` and `fedora-xfce-common.ks`; `calico.ks` only adds to (or trims from) that set.
 - `kitty` is installed but `xfce4-terminal` stays the default terminal; switch with `xfce4-settings-manager` → *Preferred Applications* if you want `kitty` instead.
+- The ISO must stay below GitHub's 2 GiB release-asset limit. The live root filesystem therefore ships without its own copy of the initramfs in `/boot` (the ISO boots from `isolinux/initrd0.img`, and anaconda builds a fresh one when installing to disk).
 
 ### Layout
 

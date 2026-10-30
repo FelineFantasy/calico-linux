@@ -40,6 +40,11 @@ and releases are tagged `v<version>`.
 - The initramfs rebuild drops drivers that the installed kernel no longer
   ships (`ide_cd`, `ieee1394`) and expands the bare `=ata` group entry that
   dracut-install rejects, so dracut stops failing on stale livecd-tools data.
+- The live root filesystem no longer keeps a second copy of the initramfs in
+  `/boot`. The ISO boots from `isolinux/initrd0.img` and anaconda builds a
+  fresh initramfs for installed systems, so the copy only made the ISO larger
+  (and pushed it over GitHub's 2 GiB release asset limit, which failed the
+  release upload). The workflow now fails before uploading an oversized ISO.
 
 ## [1.0.0]
 

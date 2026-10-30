@@ -104,6 +104,24 @@ jobs:
         sha256sum "$ISO" > "$ISO.sha256"
         cat "$ISO.sha256"
 
+    - name: Check ISO fits GitHub release limit
+      run: |
+        set -euo pipefail
+        ISO="Calico-Linux-${{ github.event.inputs.version }}.iso"
+        size=$(stat -c%s "$ISO")
+        limit=$((2 * 1024 * 1024 * 1024))
+        echo "ISO is $size bytes, release assets must be smaller than $limit bytes"
+        # Fail here instead of after the build: uploads of larger files are
+        # rejected by the release API with a bare "size must be less than
+        # 2147483648" error.
+        if [ "$size" -ge "$limit" ]; then
+          echo "::error::$ISO is $size bytes and cannot be attached to a release"
+          exit 1
+        fi
+        if [ "$size" -ge $((limit - 64 * 1024 * 1024)) ]; then
+          echo "::warning::$ISO is within 64 MiB of the release asset limit"
+        fi
+
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
