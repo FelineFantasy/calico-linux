@@ -35,6 +35,35 @@ fastfetch
 -rootfiles
 -tiwilink-firmware
 -words
+
+# terminal
+kitty
+
+# quality-of-life CLI tools
+bat
+eza
+fzf
+zoxide
+ripgrep
+fd-find
+jq
+tree
+
+# system inspection
+btop
+ncdu
+duf
+inxi
+
+# editors and shell tooling
+micro
+tmux
+git
+
+# archives
+unzip
+p7zip
+zstd
 %end
 
 %post
@@ -71,10 +100,28 @@ mkdir -p /etc/profile.d
 cat > /etc/profile.d/calico-motd.sh <<'EOF'
 if [ -n "$PS1" ] && [ -z "$CALICO_MOTD_SHOWN" ]; then
     export CALICO_MOTD_SHOWN=1
-    printf 'Welcome to Calico Linux! 🐾\nMeow!\n'
+    if [ -x /usr/bin/fastfetch ] && [ -r /etc/fastfetch/config.jsonc ]; then
+        fastfetch --config /etc/fastfetch/config.jsonc
+    else
+        printf 'Welcome to Calico Linux! 🐾\nMeow!\n'
+    fi
 fi
 EOF
 chmod 0644 /etc/profile.d/calico-motd.sh
+
+# Wire up the optional CLI tools so they behave as users expect.
+cat > /etc/profile.d/calico-tools.sh <<'EOF'
+if [ -n "$PS1" ]; then
+    if command -v zoxide >/dev/null 2>&1; then
+        eval "$(zoxide init bash)"
+    fi
+    if command -v eza >/dev/null 2>&1; then
+        alias ll='eza -l --group-directories-first'
+        alias la='eza -la --group-directories-first'
+    fi
+fi
+EOF
+chmod 0644 /etc/profile.d/calico-tools.sh
 
 # Rebuild the live initramfs.
 #
@@ -147,6 +194,19 @@ fi
 # ISO.  Stage the freshly built initramfs into the ISO tree here.
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 export PATH
+
+# livecd-tools runs %post --nochroot from the directory livecd-creator was
+# started in, which both the workflow and scripts/build-local.sh set to the
+# kickstart checkout, so the repository configs are reachable via $PWD.
+configs_dir="$(pwd)/configs/fastfetch"
+if [ ! -f "$configs_dir/config.jsonc" ] || [ ! -f "$configs_dir/calico.txt" ]; then
+    echo "calico: $configs_dir is missing; run livecd-creator from the repo checkout" >&2
+    exit 1
+fi
+install -d "$INSTALL_ROOT/etc/fastfetch"
+install -m 0644 "$configs_dir/config.jsonc" "$INSTALL_ROOT/etc/fastfetch/config.jsonc"
+install -m 0644 "$configs_dir/calico.txt" "$INSTALL_ROOT/etc/fastfetch/calico.txt"
+echo "calico: installed fastfetch config into $INSTALL_ROOT/etc/fastfetch"
 
 kernelver=$(ls -1 "$INSTALL_ROOT/lib/modules" 2>/dev/null | sort -V | tail -n1)
 initramfs="$INSTALL_ROOT/boot/initramfs-${kernelver}.img"

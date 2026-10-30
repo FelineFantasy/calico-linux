@@ -56,6 +56,7 @@ jobs:
 
             git clone --branch f42 https://pagure.io/fedora-kickstarts.git /tmp/ks
             cp /work/calico.ks /tmp/ks/calico.ks
+            cp -r /work/configs /tmp/ks/configs
 
             cd /tmp/ks
             livecd-creator \

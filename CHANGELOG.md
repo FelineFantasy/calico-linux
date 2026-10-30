@@ -11,10 +11,20 @@ and releases are tagged `v<version>`.
 - Local build script (`scripts/build-local.sh`) wrapping the containerised
   `livecd-creator` run.
 - `.gitignore`, `.editorconfig` and `CONTRIBUTING.md` for repository hygiene.
+- `kitty` terminal, available alongside the default `xfce4-terminal`.
+- Quality-of-life CLI tools: `bat`, `eza`, `fzf`, `zoxide`, `ripgrep`,
+  `fd-find`, `jq`, `tree`, `btop`, `ncdu`, `duf`, `inxi`, `micro`, `tmux`,
+  `unzip`, `p7zip`, `zstd`.
+- Branded `fastfetch` config with an ASCII cat logo, installed from
+  `configs/fastfetch/` into `/etc/fastfetch/`.
+- Shell integration for the new tools (`zoxide` hook, `ll`/`la` aliases for
+  `eza`).
 
 ### Changed
 
 - README quick start section for guided ISO builds via GitHub Actions.
+- Interactive login shells now show `fastfetch` instead of the plain two-line
+  banner (the motd/issue text banner is still used for consoles).
 
 ### Fixed
 

@@ -29,6 +29,7 @@ docker run --privileged --rm -it \
     git clone --depth 1 --branch "f${FEDORA_RELEASE}" \
       https://pagure.io/fedora-kickstarts.git /tmp/ks
     cp /work/calico.ks /tmp/ks/calico.ks
+    cp -r /work/configs /tmp/ks/configs
     cd /tmp/ks
     livecd-creator \
       --config=calico.ks \

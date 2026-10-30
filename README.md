@@ -2,7 +2,7 @@
 
 A Fedora XFCE live spin, rebranded as **Calico Linux**. 🐾
 
-Built from upstream `fedora-kickstarts` with a small `calico.ks` overlay that rebrands `os-release`, adds a motd banner, and ships `fastfetch` out of the box.
+Built from upstream `fedora-kickstarts` with a small `calico.ks` overlay that rebrands `os-release`, shows a branded `fastfetch` on login, and adds a small set of quality-of-life CLI tools (`kitty`, `bat`, `eza`, `fzf`, `zoxide`, `ripgrep`, `fd-find`, `jq`, `tree`, `btop`, `ncdu`, `duf`, `inxi`, `micro`, `tmux`, `git`, `unzip`, `p7zip`, `zstd`).
 
 ## Building via GitHub Actions
 
@@ -24,6 +24,7 @@ docker run --privileged --rm -it \
     dnf install -y livecd-tools spin-kickstarts git
     git clone --depth 1 --branch f42 https://pagure.io/fedora-kickstarts.git /tmp/ks
     cp /work/calico.ks /tmp/ks/calico.ks
+    cp -r /work/configs /tmp/ks/configs
     cd /tmp/ks
     livecd-creator \
       --config=calico.ks \
@@ -48,12 +49,14 @@ Compare against the `.iso.sha256` file attached to the release.
 
 - Built against Fedora f42 (stable). Change the branch in the workflow and `calico.ks` includes to target a different release.
 - Root partition is 8 GiB, sized for XFCE + fastfetch.
-- Kernel, drivers and package set come from upstream `fedora-live-base.ks` and `fedora-xfce-common.ks`.
+- Kernel, drivers and the base package set come from upstream `fedora-live-base.ks` and `fedora-xfce-common.ks`; `calico.ks` only adds to (or trims from) that set.
+- `kitty` is installed but `xfce4-terminal` stays the default terminal; switch with `xfce4-settings-manager` → *Preferred Applications* if you want `kitty` instead.
 
 ### Layout
 
 ```text
 calico.ks                     # kickstart overlay
+configs/fastfetch/            # fastfetch config and ASCII logo shipped in the image
 .github/workflows/build.yml   # CI that produces the ISO
 README.md                     # this file
 ```
