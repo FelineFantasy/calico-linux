@@ -16,6 +16,17 @@ Build time is typically 15–30 minutes on a GitHub-hosted runner.
 
 The build must run inside a Fedora container, because `livecd-creator` requires an RPM-based host.
 
+The simplest option is the helper script, which wraps the same container run as CI:
+
+```bash
+./scripts/build-local.sh 1.0.0
+```
+
+The argument is used as the ISO label (`Calico-Linux-<version>`); it defaults to
+`dev`. Set `FEDORA_RELEASE` to target another Fedora branch (default: `42`).
+
+To run the container manually instead:
+
 ```bash
 docker run --privileged --rm -it \
   -v "$PWD:/work" -w /work \
@@ -59,6 +70,7 @@ Compare against the `.iso.sha256` file attached to the release.
 ```text
 calico.ks                     # kickstart overlay
 configs/fastfetch/            # fastfetch config and ASCII logo shipped in the image
+scripts/build-local.sh        # containerised local build helper
 .github/workflows/build.yml   # CI that produces the ISO
 README.md                     # this file
 ```
