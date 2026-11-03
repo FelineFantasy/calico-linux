@@ -19,10 +19,15 @@ and releases are tagged `v<version>`.
   `configs/fastfetch/` into `/etc/fastfetch/`.
 - Shell integration for the new tools (`zoxide` hook, `ll`/`la` aliases for
   `eza`).
+- Dependabot configuration that keeps the pinned GitHub Actions up to date.
 
 ### Changed
 
 - README quick start section for guided ISO builds via GitHub Actions.
+- The local build helper mirrors the CI container's shared-memory limit, and
+  the README now documents it instead of only showing the raw `docker run`.
+- CI caps an ISO build at 90 minutes and keeps the resulting artifact for 14
+  days.
 - Interactive login shells show the `Welcome to Calico Linux! 🐾 / Meow!` greeting
   again, like the pre-1.0.13 images. `fastfetch` stays installed with the
   branded config in `/etc/fastfetch/`, so users can still run `fastfetch`
