@@ -5,6 +5,8 @@
 #
 # Requires Docker with --privileged support and ~20 GiB of free disk space.
 # Override the target Fedora release with FEDORA_RELEASE (default: 42).
+# The container options mirror .github/workflows/build.yml so local runs hit
+# the same limits as CI.
 set -euo pipefail
 
 VERSION="${1:-dev}"
@@ -19,6 +21,7 @@ if ! command -v docker >/dev/null 2>&1; then
 fi
 
 docker run --privileged --rm -it \
+  --shm-size=6g \
   -v "${ROOT_DIR}:/work" \
   -w /work \
   -e FEDORA_RELEASE="${FEDORA_RELEASE}" \
