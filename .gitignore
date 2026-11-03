@@ -4,6 +4,9 @@
 *.log
 /tmp/
 /build/
+# Scratch files created by containerised builds (see build.yml)
+/build.img
+/bigtmp/
 
 # Editor and OS noise
 .DS_Store
