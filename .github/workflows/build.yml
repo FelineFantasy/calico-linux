@@ -13,6 +13,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # A full livecd-creator run takes 15-30 minutes; cap it so a hung build
+    # cannot occupy a runner for the default six hours.
+    timeout-minutes: 90
     permissions:
       contents: write
     steps:
@@ -129,6 +132,9 @@ jobs:
         path: |
           Calico-Linux-${{ github.event.inputs.version }}.iso
           Calico-Linux-${{ github.event.inputs.version }}.iso.sha256
+        # The ISO is large and reproducible from the tag, so keep the artifact
+        # only long enough to debug a failed release.
+        retention-days: 14
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
